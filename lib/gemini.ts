@@ -133,7 +133,7 @@ export async function summarizeAndTag(
 export async function embedText(text: string): Promise<number[]> {
   const ai = await getClient();
   const res = await ai.models.embedContent({
-    model: "text-embedding-004",
+    model: "gemini-embedding-001",
     contents: text,
   });
   return res.embeddings?.[0]?.values ?? [];
