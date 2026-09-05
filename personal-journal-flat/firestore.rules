@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Deny everything by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // A user may only read/write their own subtree. Writes from the client
+    // SDK are not expected at all in this app (all writes go through the
+    // server API using the Admin SDK, which bypasses these rules) — this
+    // rule exists as defense-in-depth in case that ever changes.
+    match /users/{uid}/entries/{entryId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false; // server-only via Admin SDK
+    }
+  }
+}
